@@ -5,7 +5,7 @@ School workshops inscription web form for students enrollment.
 Needs python flask, pandas and odfpy modules in order to read input data libreoffice table.
 
 ## Jupyter notebook Quick testing
-See `quick_testing.ipynb` jupyter notebook to understand and test some code logic. Some of these code is used in `pdbase.py` to parse excel data and in `flask_app.py` to handle the url request and render the form.
+See [`quick_testing.ipynb`](quick_testing.ipynb) jupyter notebook to understand and test some code logic. Some of these code is used in [`pdbase.py`](pdbase.py) to parse excel data and in [`flask_app.py`](flask_app.py) to handle the url request and render the form.
 
 ## Launch
 
