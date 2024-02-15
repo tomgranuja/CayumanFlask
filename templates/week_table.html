@@ -1,0 +1,22 @@
+{% extends "bslayout.html" %}
+{% block content %}
+  
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Hora</th>
+                {% for day in days %}
+                    <th scope="col">{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for se, row in se_rows %}
+                <tr>
+                    <th scope="row">{{ se[0] }}<br>{{ se[1] }}</th>
+                    {% for text in row %} <td> {{ text }} </td> {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

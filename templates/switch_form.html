@@ -1,0 +1,55 @@
+{% extends "bslayout.html" %}
+{% block content %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {% for daytime in form.groups %}
+            <div class="p-3 border border-primary">
+                <h4>{{ daytime }}</h4>
+                {% for field in form.groups[daytime]['inputs'] %}
+                    <div class="form-check form-switch">
+                        {{ field(class="form-check-input", role="switch") }}
+                        {{ field.label(class="form-check-label") }}
+                    </div>
+                {% endfor %}
+                {% for text in form.groups[daytime]['texts'] %}
+                    <div class="pt-2 text-secondary"> {{ text }} </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="mt-3 mb-5 text-center">
+          <button type="submit" class="btn btn-lg btn-outline-primary">Ver horario semanal</button>
+        </div>
+    </form>
+    
+{% block javascript %}
+<script>
+
+  const collision = JSON.parse({{ bool_json | tojson }});
+  const elements = document.querySelectorAll("input.form-check-input")
+  for (element of elements) {
+    element.addEventListener("change", update_switches);
+  }
+  
+  function idx_id(idx){
+    return 'ws_' + idx ;
+  }
+  function id_idx(id){
+    return id.split("_")[1];
+  }
+  
+  function update_switches(event) {
+    if (event.target.checked) {
+      collision_list = collision[id_idx(event.target.id)]
+      console.log(collision_list)
+      for (idx of Object.keys(collision_list)) {
+        if ( collision_list[idx] && idx != id_idx(event.target.id) ) {
+            document.getElementById(idx_id(idx)).checked = false;
+        }
+      }
+    }
+  }
+
+</script>
+{% endblock %}
+
+{% endblock content %}
