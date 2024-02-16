@@ -6,7 +6,7 @@ import pandas as pd
 
 #Convert ods table to dataframe and fix time coordinates
 def ws_table(drop_c = False):
-    t = pd.read_excel('talleres.ods', sheet_name='talleres')
+    t = pd.read_excel('talleres.ods', sheet_name='talleres_ano')
     t['coords'] = t.loc[:,'c1':'c3'].apply(row_coords, axis=1)
     if drop_c:
         t = t.drop(columns = t.loc[:,'c1':'c3'].columns)
@@ -81,9 +81,7 @@ def export_json_data():
         [print(f'{s[:50]}...    {s[-10:]}') for s in lines[:10]];
         print('...')
         
-def boolean_collision_json(cycle):
-    t = ws_table(drop_c = True)
-    t = t[t.cycle == cycle]
+def boolean_collision_json(t):
     return collision_df(t.coords).to_json()
 
 

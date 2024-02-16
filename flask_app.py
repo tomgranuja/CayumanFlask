@@ -33,8 +33,8 @@ def table_view():
                            se_rows=zip(headers, rows),
                            days=days_list)
 
-@app.route('/<ciclo>', methods=['GET', 'POST'])
-def enrollment(ciclo):
+@app.route('/<period>/<ciclo>', methods=['GET', 'POST'])
+def enrollment(period, ciclo):
     cycle_name = {
         'ulmos': 'ulmos',
         'canelos': 'canelos y manios',
@@ -42,13 +42,14 @@ def enrollment(ciclo):
         'coihues': 'coihues y avellanos',
         'avellanos': 'coihues y avellanos'}
     #Pendig fix: change this hidden return.
-    #Better wrong ciclo handling.
+    #Better wrong ciclo and period handling.
     if ciclo not in cycle_name: return ''
-    
+    if period not in '12345': return ''
     #Create table with every request in order to see updated excel data
     #without flask server reboot
     ws_table = pdbase.ws_table()
-    t = ws_table[ws_table.cycle == cycle_name[ciclo]]
+    t = ws_table[(ws_table.period == int(period))&
+                 (ws_table.cycle == cycle_name[ciclo])]
     t = pdbase.sort_by_day_time(t)
     MyForm = create_switched_enrollment_class(
         t,
@@ -83,7 +84,7 @@ def enrollment(ciclo):
                            )      
     return render_template('switch_form.html',
                            form=form,
-                           bool_json = pdbase.boolean_collision_json(cycle_name[ciclo]))
+                           bool_json = pdbase.boolean_collision_json(t))
 
 #if __name__ == '__main__':
     #pass
