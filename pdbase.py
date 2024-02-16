@@ -46,41 +46,6 @@ def collision_df(series):
     df = series.apply(pd.Series)
     return df.apply(row_collision, df=df, axis=1)
 
-#Export workshop data to javascript and write to local file.
-def export_json_data():
-    var_names = {
-        'ulmos': {'bool': 'ulmos_collision', 
-                  'ws':'ulmos_ws',
-                  'idx': 'ulmos_idx'},
-        'canelos y manios': {'bool': 'manelos_collision',
-                             'ws': 'manelos_ws',
-                             'idx': 'manelos_idx'},
-        'coihues y avellanos': {'bool': 'coillanos_collision',
-                                'ws':'coillanos_ws',
-                                'idx': 'coillanos_idx'},
-    }
-    to = ws_table(drop_c = True)
-    lines = []
-    for c in var_names:
-        t = to[to.cycle == c]
-        json_bool = collision_df(t.coords).to_json()
-        json_ws = t.drop(columns='coords').to_json()
-        json_idx = json.dumps(t.index.to_list())
-        js = (
-            f"const {var_names[c]['bool']} = JSON.parse('{json_bool}')\n"
-            f"const {var_names[c]['ws']} = JSON.parse('{json_ws}')\n"
-            f"const {var_names[c]['idx']} = JSON.parse('{json_idx}')"
-        )
-        lines.append(js)
-    
-    with open('workshops.js', 'w') as f:
-        f.write('\n'.join(lines))
-    with open('workshops.js') as f:
-        lines = f.read().splitlines()
-        print(f'Writed {len(lines)} lines:')
-        [print(f'{s[:50]}...    {s[-10:]}') for s in lines[:10]];
-        print('...')
-        
 def boolean_collision_json(t):
     return collision_df(t.coords).to_json()
 
