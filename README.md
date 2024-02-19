@@ -14,11 +14,12 @@ Launch the local web server with `flask run`.
 export FLASK_APP=flask_app.py
 flask run
 ```
-View the interactive web form at `http://localhost:5000/<cycle>` where cycle is one of the followings:
+View the interactive web form at `http://localhost:5000/<period>/<cycle>` where period is an int in the [1,5] interval and cycle is one of the followings:
 
         - ulmos
         - canelos
         - manios
         - coihues
         - avellanos
-Example URL : [http://localhost:5000/ulmos](http://localhost:5000/ulmos)
+
+Example URL : [http://localhost:5000/3/ulmos](http://localhost:5000/3/ulmos)
