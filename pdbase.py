@@ -5,8 +5,10 @@ import json
 import pandas as pd
 
 #Convert ods table to dataframe and fix time coordinates
-def ws_table(drop_c = False):
+def ws_table(drop_c = False, nan_names=None):
     t = pd.read_excel('talleres.ods', sheet_name='talleres_ano')
+    if nan_names is not None:
+        t.loc[t['name'].isna(), 'name'] = nan_names
     t['coords'] = t.loc[:,'c1':'c3'].apply(row_coords, axis=1)
     if drop_c:
         t = t.drop(columns = t.loc[:,'c1':'c3'].columns)

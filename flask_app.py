@@ -47,7 +47,7 @@ def enrollment(period, ciclo):
     if period not in '12345': return ''
     #Create table with every request in order to see updated excel data
     #without flask server reboot
-    ws_table = pdbase.ws_table()
+    ws_table = pdbase.ws_table(nan_names='(No definido)')
     t = ws_table[(ws_table.period == int(period))&
                  (ws_table.cycle == cycle_name[ciclo])]
     t = pdbase.sort_by_day_time(t)
