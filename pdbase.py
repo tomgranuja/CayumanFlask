@@ -77,6 +77,17 @@ def insert_to_dbase(con, sname, cycle, idx, t):
             VALUES ('{sname}', '{cycle}', {idx_str})
             """)
 
+def read_from_dbase(con, t):
+    with con:
+        res = con.execute("SELECT * FROM inscription")
+    by_unique_name = {}
+    for row in res.fetchall():
+        by_unique_name[row[0]] = row[2:]
+    ins = []
+    for boolsidx in by_unique_name.values():
+        ins.extend([i for i,v in enumerate(boolsidx) if v == 1])
+    return [ins.count(i) for i in t.index]
+
 def reset_dbase(con):
     with con:
         con.execute("DELETE FROM inscription")

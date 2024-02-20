@@ -9,6 +9,13 @@
                     <div class="form-check form-switch">
                         {{ field(class="form-check-input", role="switch") }}
                         {{ field.label(class="form-check-label") }}
+                        {% if field.applied > 0 %}
+                          {% if field.applied > 5 %}
+                            <span class="badge text-bg-warning"> {{ field.applied }} </span>
+                          {% else %}
+                            <span class="badge text-bg-secondary"> {{ field.applied }} </span>
+                          {% endif %}
+                        {% endif %}
                     </div>
                 {% endfor %}
                 {% for text in form.groups[daytime]['texts'] %}

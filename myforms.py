@@ -40,6 +40,11 @@ def create_radio_enrollment_class(options_dict, row_names, col_names):
     #setattr(Form, 'submit', SubmitField('Continuar ->'))
     return Form
         
+class AppliedBooleanField(BooleanField):
+    def __init__(self, label=None, validators=None, applied=None, **kwargs):
+        super(AppliedBooleanField, self).__init__(label, validators, **kwargs)
+        self.applied = applied
+
 def create_switched_enrollment_class(df, row_names, col_names):
     class Form(FlaskForm):
         @staticmethod
@@ -95,10 +100,11 @@ def create_switched_enrollment_class(df, row_names, col_names):
         horarios = ' y '.join([
             Form.html_description(t, short=True) for t in s.coords])
         lb = f'{s["name"]} con {s.teacher} ({horarios}).'
-        setattr(Form, name, BooleanField(
+        setattr(Form, name, AppliedBooleanField(
             label = lb,
+            applied = s["applied"],
             id = name,
-            description=s.loc['description']))
+            description=s.loc['description'] ))
     return Form
 
 #if __name__ == '__main__':

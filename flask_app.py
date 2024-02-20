@@ -68,6 +68,7 @@ def enrollment(period, ciclo, sname):
     #Create table with every request in order to see updated excel data
     #without flask server reboot
     ws_table = pdbase.ws_table(nan_names='(No definido)')
+    ws_table.loc[:,'applied'] = pdbase.read_from_dbase(con, ws_table)
     t = ws_table[(ws_table.period == int(period))&
                  (ws_table.cycle == cycle_name[ciclo])]
     t = pdbase.sort_by_day_time(t)
