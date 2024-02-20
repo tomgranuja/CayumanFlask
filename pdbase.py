@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
+import sqlite3
 import json
 import pandas as pd
 
@@ -51,6 +52,34 @@ def collision_df(series):
 def boolean_collision_json(t):
     return collision_df(t.coords).to_json()
 
+#DataBase
+
+def dbase_connection():
+    return sqlite3.connect('wshop.db')
+
+def create_inscription_table(con, t):
+    cur = con.cursor()
+    ids = [f"ws_{i}" for i in t.index]
+    ids_str = ', '.join(ids)
+    cur.execute(f"""
+        CREATE TABLE IF NOT EXISTS
+        inscription (sname, cycle, {ids_str})
+        """)
+
+def insert_to_dbase(con, sname, cycle, idx, t):
+    idx_bool_list = [0 for _ in t.index]
+    for i in idx:
+        idx_bool_list[i] = 1
+    idx_str = ', '.join([str(i) for i in idx_bool_list])
+    with con:
+        con.execute(f"""
+            INSERT INTO inscription
+            VALUES ('{sname}', '{cycle}', {idx_str})
+            """)
+
+def reset_dbase(con):
+    with con:
+        con.execute("DELETE FROM inscription")
 
 #if __name__ == '__main__':
     #pass
