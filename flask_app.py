@@ -40,7 +40,7 @@ def table_view():
     idx_str = request.args['idx_str']
     t = pdbase.ws_table(nan_names='(No definido)')
     idx = []
-    if ' ' in idx_str:
+    if idx_str != '':
         idx = [int(s) for s in request.args['idx_str'].split(' ')]
     ws_schedule = week_schedule(idx, t)
     rows = week_table_rows(ws_schedule)
