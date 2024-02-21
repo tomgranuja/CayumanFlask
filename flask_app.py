@@ -35,10 +35,13 @@ def is_valid_schedule(d):
 
 @app.route('/horario/', methods=['GET', 'POST'])
 def table_view():
-    t = pdbase.ws_table(nan_names='(No definido)')
-    idx = [int(s) for s in request.args['idx_str'].split(' ')]
-    sname = request.args['sname']
     cycle = request.args['cycle']
+    sname = request.args['sname']
+    idx_str = request.args['idx_str']
+    t = pdbase.ws_table(nan_names='(No definido)')
+    idx = []
+    if ' ' in idx_str:
+        idx = [int(s) for s in request.args['idx_str'].split(' ')]
     ws_schedule = week_schedule(idx, t)
     rows = week_table_rows(ws_schedule)
     headers = times_list
