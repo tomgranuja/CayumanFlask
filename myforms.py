@@ -8,10 +8,11 @@ from wtforms import SubmitField, RadioField, BooleanField#, FieldList
 #from wtforms import StringField, BooleanField, SelectField
 from wtforms import validators
 
-class AppliedBooleanField(BooleanField):
-    def __init__(self, label=None, validators=None, applied=None, **kwargs):
-        super(AppliedBooleanField, self).__init__(label, validators, **kwargs)
+class WsBooleanField(BooleanField):
+    def __init__(self, label=None, validators=None, applied=None, quota=0, **kwargs):
+        super(WsBooleanField, self).__init__(label, validators, **kwargs)
         self.applied = applied
+        self.quota = quota
 
 def create_switched_enrollment_class(df, row_names, col_names):
     class Form(FlaskForm):
@@ -68,10 +69,11 @@ def create_switched_enrollment_class(df, row_names, col_names):
         horarios = ' y '.join([
             Form.html_description(t, short=True) for t in s.coords])
         lb = f'{s["name"]} con {s.teacher} ({horarios}).'
-        setattr(Form, name, AppliedBooleanField(
-            label = lb,
-            applied = s["applied"],
-            id = name,
+        setattr(Form, name, WsBooleanField(
+            label=lb,
+            applied=s["applied"],
+            quota=s['quota'],
+            id=name,
             description=s.loc['description'] ))
     return Form
 

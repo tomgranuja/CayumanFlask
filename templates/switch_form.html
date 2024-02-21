@@ -10,7 +10,9 @@
                         {{ field(class="form-check-input", role="switch") }}
                         {{ field.label(class="form-check-label") }}
                         {% if field.applied > 0 %}
-                          {% if field.applied > 5 %}
+                          {% if field.applied >= field.quota %}
+                            <span class="badge text-bg-danger"> {{ field.applied }} </span>
+                          {% elif field.applied > (field.quota - 3) %}
                             <span class="badge text-bg-warning"> {{ field.applied }} </span>
                           {% else %}
                             <span class="badge text-bg-secondary"> {{ field.applied }} </span>
