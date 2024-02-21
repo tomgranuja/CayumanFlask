@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
+import os
 import sqlite3
 import json
 import pandas as pd
 
+SPSHEET_PATH = os.path.join(os.path.dirname(__file__), 'talleres.ods')
+DBASE_PATH = os.path.join(os.path.dirname(__file__), 'wshop.db')
+
 #Convert ods table to dataframe and fix time coordinates
 def ws_table(drop_c = False, nan_names=None):
-    t = pd.read_excel('talleres.ods', sheet_name='talleres_ano')
+    t = pd.read_excel(SPSHEET_PATH, sheet_name='talleres_ano')
     if nan_names is not None:
         t.loc[t['name'].isna(), 'name'] = nan_names
     t['coords'] = t.loc[:,'c1':'c3'].apply(row_coords, axis=1)
@@ -55,7 +59,7 @@ def boolean_collision_json(t):
 #DataBase
 
 def dbase_connection():
-    return sqlite3.connect('wshop.db')
+    return sqlite3.connect(DBASE_PATH)
 
 def create_inscription_table(t):
     con = dbase_connection()
