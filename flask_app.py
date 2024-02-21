@@ -4,7 +4,7 @@
 # import datetime
 # import uuid
 # from flask import Flask, render_template, flash, redirect, url_for, request
-from myforms import create_radio_enrollment_class, create_switched_enrollment_class
+from myforms import create_switched_enrollment_class
 
 from flask import Flask, redirect, render_template, request, url_for
 import pdbase

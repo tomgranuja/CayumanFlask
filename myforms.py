@@ -8,38 +8,6 @@ from wtforms import SubmitField, RadioField, BooleanField#, FieldList
 #from wtforms import StringField, BooleanField, SelectField
 from wtforms import validators
 
-def cell_name(k):
-    return f"cell_{'_'.join([str(c) for c in coord])}"
-
-def create_radio_enrollment_class(options_dict, row_names, col_names):
-    class Form(FlaskForm):
-        @staticmethod
-        def html_field_name(tup):
-            return f"cell_{'_'.join([str(c) for c in tup])}"
-        
-        @staticmethod
-        def html_description(tup):
-            h_coord, d_coord = tup
-            time_str = f'{" a ".join(row_names[h_coord])}'
-            day_str = col_names[d_coord]
-            return f'{day_str} de {time_str}'
-
-        @staticmethod
-        def key_tuple(name):
-            _,a,b = name.split('_')
-            return int(a), int(b)
-
-    for coord in sorted(options_dict.keys(),
-                        key = lambda x: (x[1], x[0])):
-        name = Form.html_field_name(coord)
-        setattr(Form, name, RadioField(
-            name,
-            validators=[validators.InputRequired('↑ Selecciona una opción')],
-            choices=options_dict[coord],
-            description=Form.html_description(coord)))
-    #setattr(Form, 'submit', SubmitField('Continuar ->'))
-    return Form
-        
 class AppliedBooleanField(BooleanField):
     def __init__(self, label=None, validators=None, applied=None, **kwargs):
         super(AppliedBooleanField, self).__init__(label, validators, **kwargs)
