@@ -3,7 +3,6 @@
 
 import os
 import sqlite3
-import json
 import pandas as pd
 
 SPSHEET_PATH = os.path.join(os.path.dirname(__file__), 'talleres.ods')
