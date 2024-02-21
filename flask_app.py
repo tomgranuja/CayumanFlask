@@ -14,8 +14,7 @@ times_list = [('10:15', '11:15'), ('12:30', '13:30')]
 
 app = Flask(__name__)
 app.secret_key = b'r\x191\x9en\x08T\xb15DX<\x0c:\x1dj'
-con = pdbase.dbase_connection()
-pdbase.create_inscription_table(con, pdbase.ws_table(nan_names='(No definido)'))
+pdbase.create_inscription_table(pdbase.ws_table(nan_names='(No definido)'))
 
 def week_schedule(idx, t):
     by_coords = {(a,b): [] for a in range(len(times_list))
@@ -46,7 +45,7 @@ def table_view():
     days = days_list
     if is_valid_schedule(ws_schedule):
         print(f"#############Storing:{idx}")
-        pdbase.insert_to_dbase(con, sname, cycle, idx, t)
+        pdbase.insert_to_dbase(sname, cycle, idx, t)
     else:
         print(f'#############Should flash an invalid message')
     return render_template('week_table.html',
@@ -68,7 +67,7 @@ def enrollment(period, ciclo, sname):
     #Create table with every request in order to see updated excel data
     #without flask server reboot
     ws_table = pdbase.ws_table(nan_names='(No definido)')
-    ws_table.loc[:,'applied'] = pdbase.read_from_dbase(con, ws_table)
+    ws_table.loc[:,'applied'] = pdbase.read_from_dbase(ws_table)
     t = ws_table[(ws_table.period == int(period))&
                  (ws_table.cycle == cycle_name[ciclo])]
     t = pdbase.sort_by_day_time(t)

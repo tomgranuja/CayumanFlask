@@ -57,7 +57,8 @@ def boolean_collision_json(t):
 def dbase_connection():
     return sqlite3.connect('wshop.db')
 
-def create_inscription_table(con, t):
+def create_inscription_table(t):
+    con = dbase_connection()
     cur = con.cursor()
     ids = [f"ws_{i}" for i in t.index]
     ids_str = ', '.join(ids)
@@ -65,8 +66,11 @@ def create_inscription_table(con, t):
         CREATE TABLE IF NOT EXISTS
         inscription (sname, cycle, {ids_str})
         """)
+    con.commit()
+    con.close()
 
-def insert_to_dbase(con, sname, cycle, idx, t):
+def insert_to_dbase(sname, cycle, idx, t):
+    con = dbase_connection()
     idx_bool_list = [0 for _ in t.index]
     for i in idx:
         idx_bool_list[i] = 1
@@ -76,8 +80,10 @@ def insert_to_dbase(con, sname, cycle, idx, t):
             INSERT INTO inscription
             VALUES ('{sname}', '{cycle}', {idx_str})
             """)
+    con.close()
 
-def read_from_dbase(con, t):
+def read_from_dbase(t):
+    con = dbase_connection()
     with con:
         res = con.execute("SELECT * FROM inscription")
     by_unique_name = {}
@@ -86,11 +92,14 @@ def read_from_dbase(con, t):
     ins = []
     for boolsidx in by_unique_name.values():
         ins.extend([i for i,v in enumerate(boolsidx) if v == 1])
+    con.close()
     return [ins.count(i) for i in t.index]
 
-def reset_dbase(con):
+def reset_dbase():
+    con = dbase_connection()
     with con:
         con.execute("DELETE FROM inscription")
+    con.close()
 
 #if __name__ == '__main__':
     #pass
