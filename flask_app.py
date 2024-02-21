@@ -1,24 +1,17 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-# import datetime
-# import uuid
-# from flask import Flask, render_template, flash, redirect, url_for, request
-from myforms import create_switched_enrollment_class
-
 from flask import Flask, redirect, render_template, request, url_for
+from myforms import create_switched_enrollment_class
 import pdbase
-
-days_list = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
-times_list = [('10:15', '11:15'), ('12:30', '13:30')]
 
 app = Flask(__name__)
 app.secret_key = b'r\x191\x9en\x08T\xb15DX<\x0c:\x1dj'
 pdbase.create_inscription_table(pdbase.ws_table(nan_names='(No definido)'))
 
 def week_schedule(idx, t):
-    by_coords = {(a,b): [] for a in range(len(times_list))
-                         for b in range(len(days_list))}
+    by_coords = {(a,b): [] for a in range(len(pdbase.TIMES_LIST))
+                         for b in range(len(pdbase.DAYS_LIST))}
     for i in idx:
             for coord in t.loc[i,'coords']:
                 by_coords[coord].append(t.loc[i,'name'])
@@ -26,14 +19,14 @@ def week_schedule(idx, t):
              for k, v in by_coords.items() }
 
 def week_table_rows(d):
-    return [[d[(a,b)] for b in range(len(days_list))]
-                          for a in range(len(times_list))]
+    return [[d[(a,b)] for b in range(len(pdbase.DAYS_LIST))]
+                          for a in range(len(pdbase.TIMES_LIST))]
 
 def is_valid_schedule(d):
     return '' not in d.values()
 
 
-@app.route('/horario/', methods=['GET', 'POST'])
+@app.route('/horario/', methods=['GET'])
 def table_view():
     cycle = request.args['cycle']
     sname = request.args['sname']
@@ -44,8 +37,8 @@ def table_view():
         idx = [int(s) for s in request.args['idx_str'].split(' ')]
     ws_schedule = week_schedule(idx, t)
     rows = week_table_rows(ws_schedule)
-    headers = times_list
-    days = days_list
+    headers = pdbase.TIMES_LIST
+    days = pdbase.DAYS_LIST
     if is_valid_schedule(ws_schedule):
         print(f"#############Storing:{idx}")
         pdbase.insert_to_dbase(sname, cycle, idx, t)
@@ -53,7 +46,7 @@ def table_view():
         print(f'#############Should flash an invalid message')
     return render_template('week_table.html',
                            se_rows=zip(headers, rows),
-                           days=days_list)
+                           days=days)
 
 @app.route('/<period>/<ciclo>/<sname>', methods=['GET', 'POST'])
 def enrollment(period, ciclo, sname):
@@ -76,8 +69,8 @@ def enrollment(period, ciclo, sname):
     t = pdbase.sort_by_day_time(t)
     MyForm = create_switched_enrollment_class(
         t,
-        times_list,
-        days_list)
+        pdbase.TIMES_LIST,
+        pdbase.DAYS_LIST)
     form = MyForm()
     
     #Grouping form fields in form.groups dict.
@@ -86,9 +79,7 @@ def enrollment(period, ciclo, sname):
     #{'<Day and time str>': {'inputs': [<input label>, ...] , 'texts': [<text>, ...]} }
     form.daytime_grouping()
     if form.validate_on_submit():
-        #Make week shedule table rows
-        workshop_times = {(a,b): [] for a in range(len(times_list))
-                         for b in range(len(days_list))}
+        #Make selected workshops index string
         idx = [ form.name_idx(k) for k, v in form.data.items() 
                 if k != 'csrf_token' and v ]
         idx_str = ' '.join([str(i) for i in idx])

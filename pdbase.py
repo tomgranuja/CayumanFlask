@@ -8,6 +8,9 @@ import pandas as pd
 SPSHEET_PATH = os.path.join(os.path.dirname(__file__), 'talleres.ods')
 DBASE_PATH = os.path.join(os.path.dirname(__file__), 'wshop.db')
 
+DAYS_LIST = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
+TIMES_LIST = [('10:15', '11:15'), ('12:30', '13:30')]
+
 #Convert ods table to dataframe and fix time coordinates
 def ws_table(drop_c = False, nan_names=None):
     t = pd.read_excel(SPSHEET_PATH, sheet_name='talleres_ano')
